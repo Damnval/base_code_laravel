@@ -32,7 +32,48 @@ class UserController extends Controller
      *      @OA\Response(
      *          response=200,
      *          description="Successful operation",
-     *          @OA\JsonContent()
+     *          @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                property="data",
+     *                type="array",
+     *                example={{
+     *                  "id": 1,
+     *                  "name": "Kristine",
+     *                  "email": "kristine@gmail.com",
+     *                  "address": {
+     *                      "address": "Cebu"
+     *                   }
+     *                }, {
+     *                  "id": 2,
+     *                  "name": "John Doe",
+     *                  "email": "john@gmail.com",
+     *                  "address": null
+     *                }},
+     *                @OA\Items(
+     *                      @OA\Property(
+     *                         property="id",
+     *                         type="number",
+     *                         example=""
+     *                      ),
+     *                      @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="John Doe"
+     *                      ),
+     *                      @OA\Property(
+     *                         property="email",
+     *                         type="string",
+     *                         example=""
+     *                      ),
+     *                      @OA\Property(
+     *                         property="address",
+     *                         type="object",
+     *                         example=""
+     *                      ),
+     *                ),
+     *             ),
+     *          ),
      *       ),
      *      @OA\Response(
      *          response=401,
@@ -40,9 +81,9 @@ class UserController extends Controller
      *      ),
      *      @OA\Response(
      *          response=403,
-     *          description="Forbidden"
+     *          description="Forbidden",
      *      )
-     *     )
+     * )
      */
     public function index()
     {
@@ -74,12 +115,19 @@ class UserController extends Controller
      *      @OA\Response(
      *          response=201,
      *          description="Register Successfully",
-     *          @OA\JsonContent()
-     *       ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Register Successfully",
-     *          @OA\JsonContent()
+     *          @OA\JsonContent(
+     *                @OA\Property(property="data", type="object",
+     *                   @OA\Property(property="id", type="text", example=1),
+     *                   @OA\Property(property="name", type="text", example="Joe Doe"),
+     *                   @OA\Property(property="email", type="text", example="joe@gmail.com"),
+     *                   @OA\Property(
+     *                   property="address",
+     *                   type="object",
+     *                   @OA\Property(property="id", type="text", example=1),
+     *                       @OA\Property(property="address", type="text", example="cebu")
+     *                   ),
+     *              ),
+     *           )
      *       ),
      *      @OA\Response(
      *          response=422,
@@ -133,7 +181,19 @@ class UserController extends Controller
     *      @OA\Response(
     *          response=200,
     *          description="Successful operation",
-    *          @OA\JsonContent()
+    *          @OA\JsonContent(
+    *                @OA\Property(property="data", type="object",
+    *                   @OA\Property(property="id", type="text", example=1),
+    *                   @OA\Property(property="name", type="text", example="Joe Doe"),
+    *                   @OA\Property(property="email", type="text", example="joe@gmail.com"),
+    *                   @OA\Property(
+    *                   property="address",
+    *                   type="object",
+    *                   @OA\Property(property="id", type="text", example=1),
+    *                       @OA\Property(property="address", type="text", example="cebu")
+    *                   ),
+    *              ),
+    *           )
     *       ),
     *      @OA\Response(
     *          response=400,
@@ -157,58 +217,64 @@ class UserController extends Controller
     }
 
     /**
-    * @OA\Patch(
-    *      path="/api/users/{id}",
-    *      operationId="updateusers",
-    *      tags={"users"},
-    *      summary="Update existing user",
-    *      description="Returns updated user data",
-    *      @OA\Parameter(
-    *          name="id",
-    *          description="Project id",
-    *          required=true,
-    *          in="path",
-    *          @OA\Schema(
-    *              type="integer"
-    *          )
-    *      ),
-    *       @OA\RequestBody(
-    *          @OA\JsonContent(),
-    *          @OA\MediaType(
-    *               mediaType="multipart/form-data",
-    *               @OA\Schema(
-    *                  type="object",
-    *                  required={"address[address]","name", "email", "password"},
-    *                  @OA\Property(property="name", type="text"),
-    *                  @OA\Property(property="email", type="text"),
-    *                  @OA\Property(property="password", type="password"),
-    *                  @OA\Property(property="address[address]", type="text"),
-    *               ),
-    *           ),
-    *       ),
-    *      @OA\Response(
-    *          response=202,
-    *          description="Successful operation",
-    *          @OA\JsonContent()
-    *       ),
-    *      @OA\Response(
-    *          response=400,
-    *          description="Bad Request"
-    *      ),
-    *      @OA\Response(
-    *          response=401,
-    *          description="Unauthenticated",
-    *      ),
-    *      @OA\Response(
-    *          response=403,
-    *          description="Forbidden"
-    *      ),
-    *      @OA\Response(
-    *          response=404,
-    *          description="Resource Not Found"
-    *      )
-    * )
-    */
+     * @OA\Put(
+     *       path="/api/users/{id}",
+     *       operationId="UpdateUser",
+     *       tags={"users"},
+     *       summary="Updat User",
+     *       description="Will save a new user in DB",
+     *       @OA\Parameter(
+     *          name="id",
+     *          description="User id",
+     *          in="path",
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *       ),
+     *       @OA\RequestBody(
+     *          @OA\MediaType(
+     *               mediaType="application/json",
+     *               @OA\Schema(
+     *                  type="object",
+     *                  required={"address[address]","name", "email", "password"},
+     *                  @OA\Property(property="name", type="text", example="Update Sample Name"),
+     *                  @OA\Property(property="email", type="text", example="update@gmail.com"),
+     *                  @OA\Property(property="password", type="password", example="password"),
+     *                   @OA\Property(
+     *                   property="address",
+     *                   type="object",
+     *                   @OA\Property(property="id", type="text", example=1),
+     *                       @OA\Property(property="address", type="text", example="cebu")
+     *                   ),
+     *               ),
+     *           ),
+     *       ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Update Successfully",
+     *          @OA\JsonContent(
+     *                @OA\Property(property="data", type="object",
+     *                   @OA\Property(property="id", type="text", example=1),
+     *                   @OA\Property(property="name", type="text", example="Joe Doe"),
+     *                   @OA\Property(property="email", type="text", example="joe@gmail.com"),
+     *                   @OA\Property(
+     *                   property="address",
+     *                   type="object",
+     *                   @OA\Property(property="id", type="text", example=1),
+     *                       @OA\Property(property="address", type="text", example="cebu")
+     *                   ),
+     *              ),
+     *           )
+     *       ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(response=400, description="Bad request"),
+     *      @OA\Response(response=404, description="Resource Not Found"),
+     * )
+     */
     public function update(UserUpdateRequest $request, $id)
     {
         DB::beginTransaction();
@@ -243,9 +309,11 @@ class UserController extends Controller
      *          )
      *      ),
      *      @OA\Response(
-     *          response=204,
+     *          response=200,
      *          description="Successful operation",
-     *          @OA\JsonContent()
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="text", example="Data deleted successfully!"),
+     *          )
      *       ),
      *      @OA\Response(
      *          response=401,
