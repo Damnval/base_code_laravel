@@ -48,4 +48,24 @@ class UserCreateTest extends TestCase
         $this->post('/api/users', $formData, ['Accept' => 'application/json'])
             ->assertStatus(422);
     }
+
+    /**
+    * will test if name field is required
+    *
+    * @return void
+    */
+    public function testEmailIsRequiredOnUserCreate()
+    {
+        $formData = [
+            'name' => $this->faker->firstName,
+            'email' => '',
+            'password' => $this->faker->password,
+            'address' => [
+                'address' => $this->faker->address
+            ]
+        ];
+
+        $this->post('/api/users', $formData, ['Accept' => 'application/json'])
+            ->assertStatus(422);
+    }
 }
