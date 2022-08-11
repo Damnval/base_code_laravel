@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-// groot;
-
 Route::get('/', function () {
     return view('welcome');
 });
